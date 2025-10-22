@@ -71,7 +71,6 @@ class MyPrisonersDilemmaPlayer(BasePlayer):
 
         TODO: Use this to initialize any strategy-specific state.
         """
-        debug("Game starting!")
         # TODO: Add your initialization logic here
         pass
 
@@ -114,18 +113,15 @@ class MyPrisonersDilemmaPlayer(BasePlayer):
             # Not the first round - we have history
             opponent_last_move = last_round["opponent_move"]
             my_last_move = last_round["your_move"]
-            debug(f"Round {round_num}: Opponent played {opponent_last_move}, I played {my_last_move}")
 
             # TODO: Make decision based on history
             my_move = "C" if random.random() > 0.2 else "D"
         else:
             # First round - no history yet
-            debug(f"Round {round_num}: First round")
 
             # TODO: Choose your first move
             my_move = "C"  # Replace with your logic
 
-        debug(f"Choosing: {my_move}")
         return my_move
 
     def on_game_over(self, message):
@@ -151,7 +147,6 @@ class MyPrisonersDilemmaPlayer(BasePlayer):
         TODO: Optional - add any cleanup or final analysis here.
         """
         result = message.get("result")
-        debug(f"Game over! Result: {result}")
         # TODO: Add any final analysis here
 
 

@@ -113,7 +113,7 @@ class MyPrisonersDilemmaPlayer(BasePlayer):
             # Not the first round - we have history
             opponent_last_move = last_round["opponent_move"]
             my_last_move = last_round["your_move"]
-            debug(f"Round {round_num}: Opponent played {opponent_last_move}, I played {my_last_move}")
+            debug(f"Round {round_num}: In the last round, opponent played {opponent_last_move}, I played {my_last_move}")
 
             # TODO: Make decision based on history
             my_move = "C"  # Replace with your logic

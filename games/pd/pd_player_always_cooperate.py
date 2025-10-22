@@ -32,7 +32,6 @@ class AlwaysCooperatePlayer(BasePlayer):
     def on_game_start(self, message):
         """Initialize game state when game starts."""
         self.total_rounds = message.get("rounds")
-        debug(f"Game starting! Playing {self.total_rounds} rounds - Always Cooperate strategy")
 
     def on_your_turn(self, message):
         """
@@ -42,16 +41,7 @@ class AlwaysCooperatePlayer(BasePlayer):
         your_score = message.get("your_score")
         last_round = message.get("last_round")
 
-        if last_round:
-            debug(f"Round {round_num}: Score={your_score}, "
-                  f"Last: I played {last_round['your_move']}, "
-                  f"Opponent played {last_round['opponent_move']}, "
-                  f"I gained {last_round['your_score_gained']}")
-        else:
-            debug(f"Round {round_num}: Score={your_score} (first round)")
-
         # Always cooperate
-        debug("Choosing: COOPERATE")
         self.rounds_played += 1
         return "C"
 
@@ -59,10 +49,6 @@ class AlwaysCooperatePlayer(BasePlayer):
         """Called when game ends."""
         result = message.get("result")
         final_scores = message.get("final_scores")
-        debug(f"Game over! Result: {result}")
-        debug(f"Final scores: {final_scores}")
-        debug(f"Cooperated in all {self.rounds_played} rounds")
-
 
 if __name__ == "__main__":
     player_main_loop(AlwaysCooperatePlayer)

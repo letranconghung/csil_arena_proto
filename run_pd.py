@@ -42,7 +42,6 @@ def main():
     player1 = LocalPlayerContainer("player1", timeout=10.0)
     player1.start(player1_script)
 
-    print("Starting Player 2...")
     player2 = LocalPlayerContainer("player2", timeout=10.0)
     player2.start(player2_script)
 
@@ -53,7 +52,6 @@ def main():
         game.initialize_game()
 
         # Wait for both players to be ready
-        print("\nWaiting for players to be ready...")
         for player_id, player in game.players.items():
             response = player.receive_message()
             if response.get("status") == "ready":

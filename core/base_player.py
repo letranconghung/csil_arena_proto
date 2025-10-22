@@ -131,7 +131,6 @@ def player_main_loop(player_class: type) -> None:
             player_main_loop(MyPlayer)
     """
     setup_io()
-    debug("Player initializing")
     send_message({"status": "ready"})
 
     player = player_class()
