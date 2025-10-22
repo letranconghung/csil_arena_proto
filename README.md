@@ -1,3 +1,14 @@
+# Game mechanics reminder
+- The payoff:
+
+|     | C   | D   |
+|-----|-----|-----|
+| **C** | 3/3 | 0/5 |
+| **D** | 5/0 | 1/1 |
+- In the tournament, you will be matched with every other player for 5 games per matchup.
+- **Caution**: Different from what I said at the meeting, there will be **NO** self-play.
+- Goal: maximimize your total number of points (i.e., across all 5(N choose 2) games, where N is the number of players).
+
 # What to change
 Modify the file `pd_player_template.py`. A few things to note:
 - 1 instance of the player class will be sustained throughout each game, so you can do some tracking
@@ -35,15 +46,3 @@ python tournament_pd.py games/pd/pd_player_*.py games/pd/pd_player_always_defect
 ``
 
 and so on.
-
-# Game mechanics reminder
-- The payoff:
-
-|     | C   | D   |
-|-----|-----|-----|
-| **C** | 3/3 | 0/5 |
-| **D** | 5/0 | 1/1 |
-- In the tournament, you will be matched with every other player for 5 games per matchup.
-- **Caution**: Different from what I said at the meeting, there will be **NO** self-play.
-- Goal: maximimize your total number of points (i.e., cross all 5(N choose 2) games, where N is the number of players).
-
