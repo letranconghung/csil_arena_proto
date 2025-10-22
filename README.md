@@ -23,7 +23,7 @@ Requires Python 3.8 or higher. No additional dependencies needed.
 python run_tictactoe.py games/tictactoe/tictactoe_player.py games/tictactoe/tictactoe_player_blocking.py
 
 # Run a prisoner's dilemma game
-python run_prisoners_dilemma.py games/prisoners_dilemma/pd_player_always_cooperate.py games/prisoners_dilemma/pd_player_tit_for_tat.py
+python run_pd.py games/pd/pd_player_always_cooperate.py games/pd/pd_player_tit_for_tat.py
 ```
 
 ## Writing Your Own Player

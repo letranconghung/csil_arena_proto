@@ -24,7 +24,7 @@ games/tictactoe/
 
 ### Game: Prisoner's Dilemma
 ```
-games/prisoners_dilemma/
+games/pd/
 ├── __init__.py
 ├── pd_manager.py             # Game engine (disclosed)
 ├── pd_player_always_cooperate.py # Example player: always cooperate
@@ -34,7 +34,7 @@ games/prisoners_dilemma/
 ### Runner Scripts
 ```
 run_tictactoe.py             # Run tic-tac-toe game
-run_prisoners_dilemma.py     # Run prisoner's dilemma game
+run_pd.py     # Run prisoner's dilemma game
 ```
 
 ### Documentation
@@ -70,7 +70,7 @@ rm -f game_arena_dist/core/player_container.py  # Remove Docker version
 cp -r games game_arena_dist/
 
 # Copy runners
-cp run_tictactoe.py run_prisoners_dilemma.py game_arena_dist/
+cp run_tictactoe.py run_pd.py game_arena_dist/
 
 # Copy documentation
 cp README.md game_arena_dist/

@@ -12,7 +12,7 @@ import threading
 from typing import Dict, List, Tuple
 from itertools import combinations_with_replacement
 from core.local_player_container import LocalPlayerContainer
-from games.prisoners_dilemma.pd_manager import PrisonersDilemmaManager
+from games.pd.pd_manager import PrisonersDilemmaManager
 
 
 class TournamentManager:

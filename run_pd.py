@@ -8,7 +8,7 @@ import time
 import threading
 from core.local_player_container import LocalPlayerContainer
 # from core.player_container import PlayerContainer as LocalPlayerContainer
-from games.prisoners_dilemma.pd_manager import PrisonersDilemmaManager
+from games.pd.pd_manager import PrisonersDilemmaManager
 
 
 def main():
@@ -39,8 +39,6 @@ def main():
     # Create game manager
     game = PrisonersDilemmaManager()
 
-    # Create player containers
-    print("Starting Player 1...")
     player1 = LocalPlayerContainer("player1", timeout=10.0)
     player1.start(player1_script)
 
@@ -88,10 +86,7 @@ def main():
             if not next_players:
                 break
 
-            print(game.get_display_state())
-
             # Request moves from all players simultaneously
-            print(f"\nRequesting moves from {len(next_players)} players...")
             for player_id in next_players:
                 player = game.players[player_id]
                 player.send_message(game.get_move_request_message(player_id))
@@ -150,13 +145,9 @@ def main():
             # Process simultaneous moves (calculate scores)
             game.process_simultaneous_moves()
 
-            # Show debug messages and moves
-            print(f"Round {game.current_round} moves:")
+            # Show debug messages
             for player_id in next_players:
                 player = game.players[player_id]
-                move_display = "COOPERATE" if moves[player_id] == "C" else "DEFECT"
-                print(f"  {player_id}: {move_display}")
-
                 if verbose:
                     for debug_msg in player.get_debug_messages():
                         print(f"  [{player_id} LOG] {debug_msg}")
@@ -170,6 +161,26 @@ def main():
         print(f"\nFinal Scores:")
         for player_id, score in result['final_scores'].items():
             print(f"  {player_id}: {score}")
+
+        # Display move table
+        print(f"\n{'='*40}")
+        print("MOVE HISTORY:")
+        print(f"{'='*40}")
+
+        # Header
+        player1_id = game.player_ids[0]
+        player2_id = game.player_ids[1]
+        print(f"Round | {player1_id:^10} | {player2_id:^10}")
+        print(f"{'-'*6}|{'-'*12}|{'-'*12}")
+
+        # Display each round's moves
+        for round_num, (p1_move, p2_move, p1_score, p2_score) in enumerate(game.history, 1):
+            print(f"{round_num:^6}| {p1_move:^10} | {p2_move:^10}")
+
+        # Display totals
+        print(f"{'-'*6}|{'-'*12}|{'-'*12}")
+        print(f"TOTAL | {result['final_scores'][player1_id]:^10} | {result['final_scores'][player2_id]:^10}")
+        print(f"{'='*40}")
 
         # Send game over messages
         for player_id, player in game.players.items():
