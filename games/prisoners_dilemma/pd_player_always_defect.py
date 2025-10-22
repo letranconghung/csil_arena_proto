@@ -9,25 +9,35 @@ import os
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), '../../core'))
 
 try:
-    from base_player import debug, send_message, player_main_loop
+    from base_player import BasePlayer, debug, player_main_loop
 except ImportError:
     # Fallback for when running in Docker with base_player.py mounted
     import base_player
+    BasePlayer = base_player.BasePlayer
     debug = base_player.debug
-    send_message = base_player.send_message
     player_main_loop = base_player.player_main_loop
 
 
-def handle_message(message):
-    """Handle messages from the manager."""
-    msg_type = message.get("type")
+class AlwaysDefectPlayer(BasePlayer):
+    """
+    Always defects regardless of opponent's actions.
+    Tracks game history for analysis.
+    """
 
-    if msg_type == "game_start":
-        rounds = message.get("rounds")
-        debug(f"Game starting! Playing {rounds} rounds - Always Defect strategy")
-        return True
+    def __init__(self):
+        super().__init__()
+        self.rounds_played = 0
+        self.total_rounds = 0
 
-    elif msg_type == "your_turn":
+    def on_game_start(self, message):
+        """Initialize game state when game starts."""
+        self.total_rounds = message.get("rounds")
+        debug(f"Game starting! Playing {self.total_rounds} rounds - Always Defect strategy")
+
+    def on_your_turn(self, message):
+        """
+        Always returns 'D' for defect.
+        """
         round_num = message.get("round")
         your_score = message.get("your_score")
         last_round = message.get("last_round")
@@ -42,23 +52,17 @@ def handle_message(message):
 
         # Always defect
         debug("Choosing: DEFECT")
-        send_message({"move": "D"})
-        return True
+        self.rounds_played += 1
+        return "D"
 
-    elif msg_type == "game_over":
+    def on_game_over(self, message):
+        """Called when game ends."""
         result = message.get("result")
         final_scores = message.get("final_scores")
         debug(f"Game over! Result: {result}")
         debug(f"Final scores: {final_scores}")
-        return False
-
-    elif msg_type == "error":
-        error_msg = message.get("message")
-        debug(f"Error from manager: {error_msg}")
-        return True
-
-    return True
+        debug(f"Defected in all {self.rounds_played} rounds")
 
 
 if __name__ == "__main__":
-    player_main_loop(handle_message)
+    player_main_loop(AlwaysDefectPlayer)
