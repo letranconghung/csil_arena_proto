@@ -43,6 +43,7 @@ and so on.
 |-----|-----|-----|
 | **C** | 3/3 | 0/5 |
 | **D** | 5/0 | 1/1 |
-- In the tournament, you will be matched with every other player, including yourself, for 5 games per matchup.
-- Goal: maximimize your total number of points (i.e., cross all 5N^2 games, where N is the number of players).
+- In the tournament, you will be matched with every other player for 5 games per matchup.
+- **Caution**: Different from what I said at the meeting, there will be **NO** self-play.
+- Goal: maximimize your total number of points (i.e., cross all 5(N choose 2) games, where N is the number of players).
 

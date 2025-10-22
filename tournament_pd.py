@@ -3,14 +3,14 @@
 Tournament Manager for Prisoner's Dilemma.
 
 Runs a round-robin tournament where each player plays against every other player
-multiple times. Tracks total points and displays rankings.
+(excluding self-play) multiple times. Tracks total points and displays rankings.
 """
 import sys
 import os
 import time
 import threading
 from typing import Dict, List, Tuple
-from itertools import combinations_with_replacement
+from itertools import combinations
 from core.local_player_container import LocalPlayerContainer
 from games.pd.pd_manager import PrisonersDilemmaManager
 
@@ -18,7 +18,7 @@ from games.pd.pd_manager import PrisonersDilemmaManager
 class TournamentManager:
     """Manages a round-robin tournament for Prisoner's Dilemma."""
 
-    def __init__(self, player_scripts: List[str], games_per_matchup: int = 3):
+    def __init__(self, player_scripts: List[str], games_per_matchup: int = 5):
         """
         Initialize tournament.
 
@@ -28,7 +28,9 @@ class TournamentManager:
         """
         self.player_scripts = player_scripts
         self.games_per_matchup = games_per_matchup
-        self.player_names = [os.path.basename(script).replace('.py', '') for script in player_scripts]
+
+        # Generate unique player names from script basenames
+        self.player_names = self._generate_unique_names(player_scripts)
 
         # Track cumulative scores across all games
         self.total_scores = {name: 0 for name in self.player_names}
@@ -44,6 +46,37 @@ class TournamentManager:
         self.game_times = []  # Time for each game
         self.player_times = {name: 0.0 for name in self.player_names}  # Total time per player
         self.player_move_counts = {name: 0 for name in self.player_names}  # Number of moves per player
+
+    def _generate_unique_names(self, player_scripts: List[str]) -> List[str]:
+        """
+        Generate unique player names from script paths.
+        If duplicate basenames exist, add suffixes (_2, _3, etc.) to make them unique.
+
+        Args:
+            player_scripts: List of absolute paths to player scripts
+
+        Returns:
+            List of unique player names corresponding to the scripts
+        """
+        # Extract base names
+        base_names = [os.path.basename(script).replace('.py', '') for script in player_scripts]
+
+        # Track name occurrences
+        name_counts = {}
+        unique_names = []
+
+        for base_name in base_names:
+            if base_name not in name_counts:
+                # First occurrence - use the name as-is
+                name_counts[base_name] = 1
+                unique_names.append(base_name)
+            else:
+                # Duplicate detected - add suffix
+                name_counts[base_name] += 1
+                unique_name = f"{base_name}_{name_counts[base_name]}"
+                unique_names.append(unique_name)
+
+        return unique_names
 
     def run_tournament(self) -> bool:
         """
@@ -61,10 +94,10 @@ class TournamentManager:
         print(f"\nPlayers ({len(self.player_names)}):")
         for i, name in enumerate(self.player_names, 1):
             print(f"  {i}. {name}")
-        print(f"\nFormat: Round-robin (including self-play), {self.games_per_matchup} games per matchup")
+        print(f"\nFormat: Round-robin, {self.games_per_matchup} games per matchup")
 
-        # Generate all pairwise matchups (including self-play)
-        matchups = list(combinations_with_replacement(range(len(self.player_scripts)), 2))
+        # Generate all pairwise matchups (excluding self-play)
+        matchups = list(combinations(range(len(self.player_scripts)), 2))
         total_games = len(matchups) * self.games_per_matchup
 
         print(f"Total matchups: {len(matchups)}")
@@ -151,10 +184,9 @@ class TournamentManager:
         # Create game manager
         game = PrisonersDilemmaManager()
 
-        # For self-play, create unique IDs for each instance
-        is_self_play = p1_name == p2_name
-        player1_id = f"{p1_name}_1" if is_self_play else p1_name
-        player2_id = f"{p2_name}_2" if is_self_play else p2_name
+        # Use player names as IDs
+        player1_id = p1_name
+        player2_id = p2_name
 
         # Track player-specific timing
         player_times = {p1_name: 0.0, p2_name: 0.0}
@@ -279,17 +311,11 @@ class TournamentManager:
             for player in game.players.values():
                 player.get_debug_messages()
 
-            # Reformat result to use actual player names (not IDs)
+            # Reformat result to use actual player names
             winner = result['winner']
-            # Map winner ID back to actual player name
-            if winner == player1_id:
-                winner = p1_name
-            elif winner == player2_id:
-                winner = p2_name
-            # else winner is None (draw)
 
             formatted_result = {
-                'result': result['result'] if not is_self_play else f"Draw with {result['final_scores'][player1_id]} points each",
+                'result': result['result'],
                 'winner': winner,
                 'scores': {
                     p1_name: result['final_scores'][player1_id],
@@ -403,15 +429,15 @@ def main():
     if len(sys.argv) < 2:
         print("Usage: python tournament_pd.py <player1.py> [player2.py ...] [--games N]")
         print("\nOptions:")
-        print("  --games N    Number of games per matchup (default: 3)")
+        print("  --games N    Number of games per matchup (default: 5)")
         print("\nExample:")
         print("  python tournament_pd.py games/prisoners_dilemma/pd_player_*.py")
-        print("  python tournament_pd.py games/prisoners_dilemma/pd_player_*.py --games 5")
-        print("\nNote: Players will compete against all others AND themselves")
+        print("  python tournament_pd.py games/prisoners_dilemma/pd_player_*.py --games 10")
+        print("\nNote: Round-robin format - each player competes against all others")
         sys.exit(1)
 
     # Parse arguments
-    games_per_matchup = 3
+    games_per_matchup = 5
     player_scripts = []
 
     i = 1
@@ -434,8 +460,8 @@ def main():
             print(f"Error: Player script not found: {script}", file=sys.stderr)
             sys.exit(1)
 
-    if len(player_scripts) < 1:
-        print("Error: Need at least 1 player for a tournament", file=sys.stderr)
+    if len(player_scripts) < 2:
+        print("Error: Need at least 2 players for a round-robin tournament", file=sys.stderr)
         sys.exit(1)
 
     # Run tournament
