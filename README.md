@@ -19,10 +19,10 @@ Modify the file `pd_player_template.py`. A few things to note:
 - read documentation in the file itself
 
 
-**CAUTION**: USE `debug` to debug, NOT `print`.
+**CAUTION**: USE `debug` to debug, NOT `print`, because `print` is used for interacting with the game manager.
 
 # How to test
-Run the following command from the repo root to play against another bot.
+Run the following command from the repo root to play against another bot, say, if you wanna play against the always-cooperate bot.
 
 ``
 python run_pd.py games/pd/pd_player_template.py games/pd/pd_player_always_cooperate.py
