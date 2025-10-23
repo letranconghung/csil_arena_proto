@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 Prisoner's Dilemma game manager implementation.
-30 rounds of simultaneous cooperation/defection decisions.
+100 rounds of simultaneous cooperation/defection decisions.
 """
 import sys
 import os
@@ -17,7 +17,7 @@ class PrisonersDilemmaManager(GameManager):
     # Payoff matrix
     COOPERATE = "C"
     DEFECT = "D"
-    ROUNDS = 30
+    ROUNDS = 100
 
     def __init__(self):
         super().__init__()

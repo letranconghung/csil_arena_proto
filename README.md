@@ -7,6 +7,7 @@
 | **D** | 5/0 | 1/1 |
 - In the tournament, you will be matched with every other player for 5 games per matchup.
 - **Caution**: Different from what I said at the meeting, there will be **NO** self-play.
+- There are 100 rounds per game.
 - Goal: maximimize your total number of points (i.e., across all 5(N choose 2) games, where N is the number of players).
 
 # What to change
